@@ -1,17 +1,32 @@
 const path = require('path')
 const getAbsolutePath = (pathDir) => path.resolve(__dirname, pathDir)
+const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const os = require('os')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = (_env, argv) => {
   const isProd = argv.mode === 'production'
   const isDev = !isProd
 
+  let entry = {
+    main: './src/index.js',
+  }
+
+  // 개발 모드
+  if (isProd) {
+    // 엔트리 추가
+    entry = {
+      ...entry,
+      'polyfills': './src/polyfills/index.js',
+      'detect.polyfills': './src/polyfills/detect.js',
+    }
+  }
+
   return {
-    entry: {
-      main: './src/index.js',
-    },
+    entry,
     output: {
       path: getAbsolutePath('dist'),
       filename: 'assets/js/[name].[contenthash:8].js',
@@ -53,36 +68,6 @@ module.exports = (_env, argv) => {
         },
       ]
     },
-    optimization: {
-      minimize: true,
-      minimizer: [
-        new CssMinimizerPlugin({
-          parallel: os.cpus().length - 1
-        }),
-      ],
-    },
-    splitChunks: {
-      chunks: 'all',
-      minSize: 0,
-      minRemainingSize: 0,
-      maxSize: 0,
-      minChunks: 1,
-      maxAsyncRequests: 30,
-      maxInitialRequests: 20,
-      enforceSizeThreshold: 50000,
-      cacheGroups: {
-        defaultVendors: {
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10,
-          reuseExistingChunk: true,
-        },
-        default: {
-          minChunks: 2,
-          priority: -10,
-          reuseExistingChunk: true,
-        },
-      },
-    },
     plugins: [
       new MiniCssExtractPlugin({
         filename: 'assets/css/[name].[contenthash:8].css',
@@ -110,24 +95,46 @@ module.exports = (_env, argv) => {
       })
     ],
     devServer: {
-      // dist 디렉토리를 웹 서버의 기본 호스트 위치로 설정
-      contentBase: path.resolve(__dirname, './dist'),
-      // 인덱스 파일 설정
-      index: 'index.html',
       // 포트 번호 설정
       port: 3000,
       // 핫 모듈 교체(HMR) 활성화 설정
       hot: true,
       // gzip 압축 활성화
       compress: true,
-      // dist 디렉토리에 실제 파일 생성
-      writeToDisk: true,
       // History 라우팅 대체 사용 설정
       historyApiFallback: true,
       // 개발 서버 자동 실행 설정
       open: true,
-      // 오류 표시 설정
-      overlay: true,
+    },
+    optimization: {
+      minimize: true,
+      minimizer: [
+        new CssMinimizerPlugin({
+          parallel: os.cpus().length - 1
+        }),
+      ],
+      splitChunks: {
+        chunks: 'all',
+        minSize: 0,
+        minRemainingSize: 0,
+        maxSize: 0,
+        minChunks: 1,
+        maxAsyncRequests: 30,
+        maxInitialRequests: 20,
+        enforceSizeThreshold: 50000,
+        cacheGroups: {
+          defaultVendors: {
+            test: /[\\/]node_modules[\\/]/,
+            priority: -10,
+            reuseExistingChunk: true,
+          },
+          default: {
+            minChunks: 2,
+            priority: -10,
+            reuseExistingChunk: true,
+          },
+        },
+      },
     },
   }
 }

@@ -31,14 +31,17 @@
     "html-webpack-plugin": "^5.5.3",
     "mini-css-extract-plugin": "^2.7.6",
     "style-loader": "^3.3.3",
-    "webpack": "^5.88.0",
+    "webpack": "^5.23.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-runtime": "^7.22.5",
+    "core-js": "^3.31.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "regenerator-runtime": "^0.13.11",
+    "unfetch": "^5.0.0"
   }
 }
