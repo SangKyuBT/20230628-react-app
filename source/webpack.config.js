@@ -1,5 +1,6 @@
 const path = require('path')
 const getAbsolutePath = (pathDir) => path.resolve(__dirname, pathDir)
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = (_env, argv) => {
   const isProd = argv.mode === 'production'
@@ -17,31 +18,44 @@ module.exports = (_env, argv) => {
     mode: 'development',
     devtool: isDev && 'cheap-module-source-map',
     resolve: {
-        extensions: ['js', 'jsx', 'json'],
-        alias: {
-          '@components': getAbsolutePath('src/components/'),
-          '@contexts': getAbsolutePath('src/contexts/'),
-          '@hooks': getAbsolutePath('src/hooks/'),
-          '@pages': getAbsolutePath('src/pages/'),
-        },
+      extensions: ['js', 'jsx', 'json'],
+      alias: {
+        '@components': getAbsolutePath('src/components/'),
+        '@contexts': getAbsolutePath('src/contexts/'),
+        '@hooks': getAbsolutePath('src/hooks/'),
+        '@pages': getAbsolutePath('src/pages/'),
       },
-      module: {
-        rules: [
-          {
-            test: /\.jsx?$/i,
-            exclude: /node_modules/,
-            use: [
-              {
-                loader: 'babel-loader',
-                options: {
-                  cacheDirectory: true,
-                  cacheCompression: false,
-                  envName: isProd ? 'production' : 'development'
-                }
+    },
+    module: {
+      rules: [
+        {
+          test: /\.jsx?$/i,
+          exclude: /node_modules/,
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true,
+                cacheCompression: false,
+                envName: isProd ? 'production' : 'development'
               }
-            ]
-          }
-        ]
-      }
+            }
+          ]
+        },
+        {
+          test: /\.css$/i,
+          use: [
+            isProd ? MiniCssExtractPlugin.loader : 'style-loader',
+            'css-loader',
+          ],
+        },
+      ]
+    },
+    plugins: [
+      new MiniCssExtractPlugin({
+        filename: 'assets/css/[name].[contenthash:8].css',
+        chunkFilename: 'assets/css/[name].[contenthash:8].chunk.css',
+      }),
+    ],
   }
 }
