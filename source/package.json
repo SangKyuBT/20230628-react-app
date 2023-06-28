@@ -4,7 +4,9 @@
   "description": "React App",
   "private": true,
   "scripts": {
-    "start": "webpack"
+    "start": "npm run dev -- --open",
+    "dev": "NODE_ENV=development webpack serve",
+    "build": "NODE_ENV=production webpack"
   },
   "keyword": [
     "webpack"
@@ -30,7 +32,8 @@
     "mini-css-extract-plugin": "^2.7.6",
     "style-loader": "^3.3.3",
     "webpack": "^5.88.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",

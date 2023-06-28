@@ -109,5 +109,25 @@ module.exports = (_env, argv) => {
         ]
       })
     ],
+    devServer: {
+      // dist 디렉토리를 웹 서버의 기본 호스트 위치로 설정
+      contentBase: path.resolve(__dirname, './dist'),
+      // 인덱스 파일 설정
+      index: 'index.html',
+      // 포트 번호 설정
+      port: 3000,
+      // 핫 모듈 교체(HMR) 활성화 설정
+      hot: true,
+      // gzip 압축 활성화
+      compress: true,
+      // dist 디렉토리에 실제 파일 생성
+      writeToDisk: true,
+      // History 라우팅 대체 사용 설정
+      historyApiFallback: true,
+      // 개발 서버 자동 실행 설정
+      open: true,
+      // 오류 표시 설정
+      overlay: true,
+    },
   }
 }
