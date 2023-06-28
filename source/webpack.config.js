@@ -1,6 +1,8 @@
 const path = require('path')
 const getAbsolutePath = (pathDir) => path.resolve(__dirname, pathDir)
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const os = require('os')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 
 module.exports = (_env, argv) => {
   const isProd = argv.mode === 'production'
@@ -51,11 +53,61 @@ module.exports = (_env, argv) => {
         },
       ]
     },
+    optimization: {
+      minimize: true,
+      minimizer: [
+        new CssMinimizerPlugin({
+          parallel: os.cpus().length - 1
+        }),
+      ],
+    },
+    splitChunks: {
+      chunks: 'all',
+      minSize: 0,
+      minRemainingSize: 0,
+      maxSize: 0,
+      minChunks: 1,
+      maxAsyncRequests: 30,
+      maxInitialRequests: 20,
+      enforceSizeThreshold: 50000,
+      cacheGroups: {
+        defaultVendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10,
+          reuseExistingChunk: true,
+        },
+        default: {
+          minChunks: 2,
+          priority: -10,
+          reuseExistingChunk: true,
+        },
+      },
+    },
     plugins: [
       new MiniCssExtractPlugin({
         filename: 'assets/css/[name].[contenthash:8].css',
         chunkFilename: 'assets/css/[name].[contenthash:8].chunk.css',
       }),
+      new webpack.EnvironmentPlugin({
+        NODE_ENV: isDev ? 'development' : 'production'
+      }),
+      new HtmlWebpackPlugin({
+        template: getAbsolutePath('public/index.html'),
+        inject: true
+      }),
+      new CleanWebpackPlugin({
+        // 플러그인 옵션 셜정
+        // dry 기본 값: false
+        // dry: true,
+        // verbose 기본 값: false
+        verbose: true,
+        // cleanOnceBeforeBuildPatterns 기본 값: ['**/*']
+        cleanOnceBeforeBuildPatterns: [
+          '**/*',
+          // build 폴더 안의 모든 것을 지우도록 설정
+          path.resolve(process.cwd(), 'build/**/*')
+        ]
+      })
     ],
   }
 }
