@@ -35,7 +35,7 @@ module.exports = (_env, argv) => {
     mode: 'development',
     devtool: isDev && 'cheap-module-source-map',
     resolve: {
-      extensions: ['js', 'jsx', 'json'],
+      extensions: ['.js', '.jsx', '.json'],
       alias: {
         '@components': getAbsolutePath('src/components/'),
         '@contexts': getAbsolutePath('src/contexts/'),
