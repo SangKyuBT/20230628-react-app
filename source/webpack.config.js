@@ -18,15 +18,13 @@ module.exports = (_env, argv) => {
     main: './src/index.js',
   }
 
-  // // 개발 모드
-  // if (isProd) {
-  //   // 엔트리 추가
-  //   entry = {
-  //     ...entry,
-  //     'polyfills': './src/polyfills/index.js',
-  //     'detect.polyfills': './src/polyfills/detect.js',
-  //   }
-  // }
+  if (isProd) {
+    entry = {
+      ...entry,
+      'polyfills': './src/polyfills/index.js',
+      'detect.polyfills': './src/polyfills/detect.js',
+    }
+  }
 
   return {
     entry,
@@ -44,6 +42,7 @@ module.exports = (_env, argv) => {
         '@contexts': getAbsolutePath('src/contexts/'),
         '@hooks': getAbsolutePath('src/hooks/'),
         '@pages': getAbsolutePath('src/pages/'),
+        'unfetch': path.resolve(__dirname, 'node_modules/unfetch/dist/unfetch.mjs') 
       },
     },
     module: {
