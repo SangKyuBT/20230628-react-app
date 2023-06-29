@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "start": "npm run dev -- --open",
-    "dev": "NODE_ENV=development webpack serve",
-    "build": "NODE_ENV=production webpack"
+    "dev": "webpack serve",
+    "build": "webpack --mode production"
   },
   "keyword": [
     "webpack"

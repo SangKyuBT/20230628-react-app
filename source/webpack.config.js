@@ -7,6 +7,9 @@ const os = require('os')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
+const DEFAULT_PORT = 3000
+const cssRegex = /\.css$/i
+
 module.exports = (_env, argv) => {
   const isProd = argv.mode === 'production'
   const isDev = !isProd
@@ -15,15 +18,15 @@ module.exports = (_env, argv) => {
     main: './src/index.js',
   }
 
-  // 개발 모드
-  if (isProd) {
-    // 엔트리 추가
-    entry = {
-      ...entry,
-      'polyfills': './src/polyfills/index.js',
-      'detect.polyfills': './src/polyfills/detect.js',
-    }
-  }
+  // // 개발 모드
+  // if (isProd) {
+  //   // 엔트리 추가
+  //   entry = {
+  //     ...entry,
+  //     'polyfills': './src/polyfills/index.js',
+  //     'detect.polyfills': './src/polyfills/detect.js',
+  //   }
+  // }
 
   return {
     entry,
@@ -32,7 +35,7 @@ module.exports = (_env, argv) => {
       filename: 'assets/js/[name].[contenthash:8].js',
       publicPath: '/',
     },
-    mode: 'development',
+    mode: isDev ? 'development' : 'production',
     devtool: isDev && 'cheap-module-source-map',
     resolve: {
       extensions: ['.js', '.jsx', '.json'],
@@ -60,7 +63,7 @@ module.exports = (_env, argv) => {
           ]
         },
         {
-          test: /\.css$/i,
+          test: cssRegex,
           use: [
             isProd ? MiniCssExtractPlugin.loader : 'style-loader',
             'css-loader',
@@ -92,11 +95,14 @@ module.exports = (_env, argv) => {
           // build 폴더 안의 모든 것을 지우도록 설정
           path.resolve(process.cwd(), 'build/**/*')
         ]
-      })
+      }),
     ],
     devServer: {
+      static: {
+        directory: path.join(__dirname, "public")
+      },
       // 포트 번호 설정
-      port: 3000,
+      port: process.env.PORT || DEFAULT_PORT,
       // 핫 모듈 교체(HMR) 활성화 설정
       hot: true,
       // gzip 압축 활성화
