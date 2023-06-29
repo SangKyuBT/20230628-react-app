@@ -1,15 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 
-// React 요소
-const app = React.createElement(
-  'div', 
-  { className: 'app' }, 
-  'React App 매뉴얼 구성'
-);
+import App from './app'
 
-// DOM 노드
-const rootNode = document.getElementById('root');
+//DOM 노드
+const root = ReactDOM.createRoot(
+  document.getElementById( 'root' )
+)
 
-// DOM 노드에 React 요소 렌더링
-ReactDOM.render(app, rootNode);
+//DOM 노드에 React 요소 렌더링
+root.render(
+  <React.StrictMode>
+    <App/>
+  </React.StrictMode>
+)
